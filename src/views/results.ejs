@@ -1,0 +1,44 @@
+<article class="results-container" aria-labelledby="results-heading">
+  <h2 id="results-heading">Resultados del Examen</h2>
+
+  <section class="results-summary" aria-labelledby="summary-heading">
+    <h3 id="summary-heading">Resumen de su rendimiento</h3>
+
+    <div class="result-card" aria-label="Resultado del examen">
+      <div class="result-score" aria-label="Su puntuacion es <%= score %> de <%= totalQuestions %>">
+        <span class="score-number"><%= score %></span>
+        <span class="score-total">de <%= totalQuestions %></span>
+      </div>
+
+      <div class="result-percentage" aria-label="Porcentaje de aciertos: <%= percentage %> por ciento">
+        <span class="percentage-value"><%= percentage %>%</span>
+      </div>
+
+      <div class="result-status" aria-live="polite">
+        <% if (passed) { %>
+          <span class="status-icon passed" aria-hidden="true">✓</span>
+          <span class="status-text passed">Aprobado</span>
+        <% } else { %>
+          <span class="status-icon failed" aria-hidden="true">✗</span>
+          <span class="status-text failed">No Aprobado</span>
+        <% } %>
+      </div>
+
+      <div class="result-message">
+        <span class="message-icon" aria-hidden="true">
+          <% if (messageIcon === 'trophy') { %>🏆<% } %>
+          <% if (messageIcon === 'thumbs-up') { %>👍<% } %>
+          <% if (messageIcon === 'check') { %>✓<% } %>
+          <% if (messageIcon === 'book') { %>📖<% } %>
+        </span>
+        <p><%= message %></p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="results-actions" aria-label="Acciones disponibles despues del examen">
+    <a href="/dashboard" class="btn btn-primary" aria-label="Volver al panel de examenes">
+      Volver al Panel
+    </a>
+  </nav>
+</article>

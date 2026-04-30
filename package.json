@@ -1,0 +1,21 @@
+{
+  "name": "examen-online",
+  "version": "1.0.0",
+  "description": "Sistema de Examen en Linea - Patron MVC con Accesibilidad Universal",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js",
+    "test": "node tests/heuristic-evaluation.js"
+  },
+  "keywords": ["mvc", "accessibility", "exam", "online", "a11y"],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.0",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.0",
+    "ejs": "^3.1.10",
+    "sql.js": "^1.10.0"
+  }
+}

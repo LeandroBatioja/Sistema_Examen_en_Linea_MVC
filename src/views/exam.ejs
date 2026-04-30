@@ -1,0 +1,119 @@
+<div class="exam-container">
+  <h2 id="exam-heading"><%= exam.title %></h2>
+
+  <div class="exam-progress">
+    <p>Pagina <%= currentPage %> de <%= totalPages %> -
+       Preguntas <%= (currentPage - 1) * perPage + 1 %> a
+       <%= Math.min(currentPage * perPage, totalQuestions) %> de <%= totalQuestions %>
+    </p>
+    <div class="progress-bar" role="progressbar"
+         aria-valuenow="<%= currentPage %>"
+         aria-valuemin="1"
+         aria-valuemax="<%= totalPages %>"
+         aria-label="Progreso: pagina <%= currentPage %> de <%= totalPages %>">
+      <div class="progress-fill" style="width: <%= (currentPage / totalPages) * 100 %>%"></div>
+    </div>
+  </div>
+
+  <% if (error) { %>
+    <div class="alert alert-error" role="alert" aria-live="assertive">
+      <span class="alert-icon" aria-hidden="true">⚠️</span>
+      <span class="alert-text">Error: <%= error %></span>
+    </div>
+  <% } %>
+
+  <form action="/exam/<%= exam.id %>/submit/<%= currentPage %>" method="POST" id="exam-form">
+    <fieldset>
+      <legend class="sr-only">Preguntas del examen - Pagina <%= currentPage %></legend>
+
+      <% questions.forEach(function(question, index) { %>
+        <% const qNum = (currentPage - 1) * perPage + index + 1; %>
+        <div class="question-block" aria-labelledby="question-<%= index %>-heading">
+          <h3 id="question-<%= index %>-heading">
+            Pregunta <%= qNum %> de <%= totalQuestions %>
+          </h3>
+          <p class="question-text"><%= question.question_text %></p>
+
+          <div class="options-fieldset">
+            <p class="sr-only">Opciones para la pregunta <%= qNum %></p>
+
+            <div class="option">
+              <input
+                type="radio"
+                id="q<%= index %>_a"
+                name="question_<%= index + 1 %>"
+                value="a"
+                required
+                <% if (previousAnswers && previousAnswers[qNum] === 'a') { %>checked<% } %>
+              >
+              <label for="q<%= index %>_a">
+                <span class="option-letter" aria-hidden="true">A)</span>
+                <%= question.option_a %>
+              </label>
+            </div>
+
+            <div class="option">
+              <input
+                type="radio"
+                id="q<%= index %>_b"
+                name="question_<%= index + 1 %>"
+                value="b"
+                <% if (previousAnswers && previousAnswers[qNum] === 'b') { %>checked<% } %>
+              >
+              <label for="q<%= index %>_b">
+                <span class="option-letter" aria-hidden="true">B)</span>
+                <%= question.option_b %>
+              </label>
+            </div>
+
+            <div class="option">
+              <input
+                type="radio"
+                id="q<%= index %>_c"
+                name="question_<%= index + 1 %>"
+                value="c"
+                <% if (previousAnswers && previousAnswers[qNum] === 'c') { %>checked<% } %>
+              >
+              <label for="q<%= index %>_c">
+                <span class="option-letter" aria-hidden="true">C)</span>
+                <%= question.option_c %>
+              </label>
+            </div>
+
+            <div class="option">
+              <input
+                type="radio"
+                id="q<%= index %>_d"
+                name="question_<%= index + 1 %>"
+                value="d"
+                <% if (previousAnswers && previousAnswers[qNum] === 'd') { %>checked<% } %>
+              >
+              <label for="q<%= index %>_d">
+                <span class="option-letter" aria-hidden="true">D)</span>
+                <%= question.option_d %>
+              </label>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </fieldset>
+
+    <div class="exam-actions">
+      <% if (currentPage > 1) { %>
+        <a href="/exam/<%= exam.id %>/page/<%= currentPage - 1 %>"
+           class="btn btn-secondary"
+           aria-label="Ir a la pagina anterior de preguntas">
+          ← Anterior
+        </a>
+      <% } %>
+
+      <button type="submit" class="btn btn-primary" aria-label="<% if (currentPage < totalPages) { %>Guardar respuestas e ir a la siguiente pagina<% } else { %>Guardar respuestas y finalizar el examen<% } %>">
+        <% if (currentPage < totalPages) { %>
+          Siguiente →
+        <% } else { %>
+          Finalizar Examen
+        <% } %>
+      </button>
+    </div>
+  </form>
+</div>

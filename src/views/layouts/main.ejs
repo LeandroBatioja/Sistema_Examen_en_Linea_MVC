@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle %> - Sistema de Examenes en Linea</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a href="#contenido-principal" class="skip-link">Saltar al contenido principal</a>
+
+  <header class="site-header">
+    <div class="container header-content">
+      <h1 class="site-title">
+        <a href="/" aria-label="Ir a la pagina principal del Sistema de Examenes">
+          Sistema de Examenes en Linea
+        </a>
+      </h1>
+      <nav>
+        <ul class="nav-menu">
+          <% if (typeof userName !== 'undefined' && userName) { %>
+            <li><a href="/dashboard" aria-label="Ir al panel de examenes">Panel</a></li>
+            <li>
+              <form action="/logout" method="POST" class="inline-form">
+                <button type="submit" aria-label="Cerrar sesion de la cuenta actual">
+                  Cerrar Sesion
+                </button>
+              </form>
+            </li>
+            <li><span class="user-greeting" aria-label="Bienvenido <%= userName %>">Hola, <%= userName %></span></li>
+          <% } else { %>
+            <li><a href="/login" aria-label="Iniciar sesion en el sistema">Iniciar Sesion</a></li>
+            <li><a href="/register" aria-label="Crear una nueva cuenta">Registrarse</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido-principal" class="container main-content">
+    <%- body %>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Sistema de Examenes en Linea - Proyecto MVC con Accesibilidad Universal</p>
+      <p aria-label="Informacion de accesibilidad">Compatible con lectores de pantalla Orca</p>
+    </div>
+  </footer>
+
+  <script src="/js/keyboard-nav.js"></script>
+</body>
+</html>

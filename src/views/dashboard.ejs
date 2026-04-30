@@ -1,0 +1,73 @@
+<article aria-labelledby="dashboard-heading">
+  <h2 id="dashboard-heading">Panel de Examenes</h2>
+  <p class="welcome-text">Bienvenido, <%= userName %>. Seleccione un examen para comenzar.</p>
+
+  <section aria-labelledby="exams-heading">
+    <h3 id="exams-heading">Examenes Disponibles</h3>
+
+    <% if (exams && exams.length > 0) { %>
+      <ul class="exam-list" role="list">
+        <% exams.forEach(function(exam) { %>
+          <li class="exam-item">
+            <article class="exam-card">
+              <h4><%= exam.title %></h4>
+              <p><%= exam.description %></p>
+              <dl class="exam-details">
+                <div>
+                  <dt>Tiempo limite:</dt>
+                  <dd><%= exam.time_limit_minutes %> minutos</dd>
+                </div>
+                <div>
+                  <dt>Preguntas por pagina:</dt>
+                  <dd><%= exam.questions_per_page %> preguntas</dd>
+                </div>
+              </dl>
+              <a href="/exam/<%= exam.id %>" class="btn btn-primary" aria-label="Comenzar examen: <%= exam.title %>">
+                Comenzar Examen
+              </a>
+            </article>
+          </li>
+        <% }); %>
+      </ul>
+    <% } else { %>
+      <p>No hay examenes disponibles en este momento.</p>
+    <% } %>
+  </section>
+
+  <% if (results && results.length > 0) { %>
+    <section aria-labelledby="results-heading">
+      <h3 id="results-heading">Mis Resultados Anteriores</h3>
+      <table class="results-table" aria-label="Historial de resultados de examenes">
+        <thead>
+          <tr>
+            <th scope="col">Examen</th>
+            <th scope="col">Puntuacion</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% results.forEach(function(r) { %>
+            <tr>
+              <td><%= r.title %></td>
+              <td>
+                <span aria-label="<%= r.score %> de <%= r.total_questions %> respuestas correctas">
+                  <%= r.score %>/<%= r.total_questions %>
+                </span>
+              </td>
+              <td><%= new Date(r.completed_at).toLocaleDateString('es-ES') %></td>
+              <td>
+                <% const pct = Math.round((r.score / r.total_questions) * 100); %>
+                <% if (pct >= 60) { %>
+                  <span class="badge badge-passed" aria-label="Aprobado">✓ Aprobado</span>
+                <% } else { %>
+                  <span class="badge badge-failed" aria-label="No aprobado">✗ No Aprobado</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </section>
+  <% } %>
+</article>

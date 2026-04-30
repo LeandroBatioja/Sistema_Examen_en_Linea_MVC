@@ -1,0 +1,97 @@
+<article class="form-card" aria-labelledby="register-heading">
+  <h2 id="register-heading">Crear Cuenta Nueva</h2>
+
+  <% if (error) { %>
+    <div class="alert alert-error" role="alert" aria-live="assertive">
+      <span class="alert-icon" aria-hidden="true">⚠️</span>
+      <span class="alert-text">Error: <%= error %></span>
+    </div>
+  <% } %>
+
+  <form action="/register" method="POST" novalidate>
+    <div class="form-group">
+      <label for="full_name">Nombre Completo</label>
+      <input
+        type="text"
+        id="full_name"
+        name="full_name"
+        required
+        autocomplete="name"
+        aria-required="true"
+        aria-describedby="fullname-help"
+        placeholder="Ingrese su nombre completo"
+      >
+      <small id="fullname-help">Su nombre completo como aparecera en los resultados</small>
+    </div>
+
+    <div class="form-group">
+      <label for="username">Nombre de Usuario</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        required
+        autocomplete="username"
+        aria-required="true"
+        aria-describedby="username-help"
+        placeholder="Elija un nombre de usuario unico"
+      >
+      <small id="username-help">Este sera su identificador para iniciar sesion</small>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Correo Electronico</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        autocomplete="email"
+        aria-required="true"
+        aria-describedby="email-help"
+        placeholder="ejemplo@universidad.edu"
+      >
+      <small id="email-help">Correo electronico valido de su institucion</small>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contrasena</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+        autocomplete="new-password"
+        aria-required="true"
+        aria-describedby="password-help"
+        minlength="6"
+        placeholder="Cree una contrasena segura"
+      >
+      <small id="password-help">Minimo 6 caracteres</small>
+    </div>
+
+    <div class="form-group">
+      <label for="password_confirm">Confirmar Contrasena</label>
+      <input
+        type="password"
+        id="password_confirm"
+        name="password_confirm"
+        required
+        autocomplete="new-password"
+        aria-required="true"
+        aria-describedby="password-confirm-help"
+        minlength="6"
+        placeholder="Repita la contrasena anterior"
+      >
+      <small id="password-confirm-help">Debe coincidir con la contrasena anterior</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary" aria-label="Enviar formulario de registro">
+      Crear Cuenta
+    </button>
+  </form>
+
+  <p class="form-footer">
+    ¿Ya tiene cuenta? <a href="/login" aria-label="Ir al formulario de inicio de sesion">Iniciar Sesion</a>
+  </p>
+</article>
