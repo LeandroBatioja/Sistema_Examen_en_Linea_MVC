@@ -89,14 +89,29 @@ npm test
 - **Usuario**: estudiante
 - **Contrasena**: estudiante123
 
+## Atajos de Teclado
+
+### Atajos Globales (Alt)
+
+| Atajo | Acción |
+|-------|--------|
+| `Alt + D` | Ir al panel de examenes (Dashboard) |
+| `Alt + L` | Ir a iniciar sesión (Login) |
+| `Alt + H` | Ir a página principal (Home) |
+
+### Navegación Básica
+
+| Tecla | Acción |
+|-------|--------|
+| `Tab` | Siguiente elemento |
+| `Shift + Tab` | Elemento anterior |
+| `Enter` | Activar botón/enlace |
+| `↑` `↓` `←` `→` | Navegar entre opciones en examenes |
+
 ## Estructura del Proyecto
 
 ```
 examen-online/
-├── docs/                    # Documentacion
-│   ├── UML-Diagram.md       # Diagramas UML
-│   ├── ISO9241-Justification.md
-│   └── UX-Report.md         # Informe de usabilidad
 ├── src/
 │   ├── models/              # Capa Modelo (datos)
 │   ├── controllers/         # Capa Controlador (logica)

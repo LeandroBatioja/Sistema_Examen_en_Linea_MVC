@@ -20,6 +20,7 @@
         <ul class="nav-menu">
           <% if (typeof userName !== 'undefined' && userName) { %>
             <li><a href="/dashboard" aria-label="Ir al panel de examenes">Panel</a></li>
+            <li><span class="user-greeting" aria-label="Bienvenido <%= userName %>">Hola, <%= userName %></span></li>
             <li>
               <form action="/logout" method="POST" class="inline-form">
                 <button type="submit" aria-label="Cerrar sesion de la cuenta actual">
@@ -27,7 +28,6 @@
                 </button>
               </form>
             </li>
-            <li><span class="user-greeting" aria-label="Bienvenido <%= userName %>">Hola, <%= userName %></span></li>
           <% } else { %>
             <li><a href="/login" aria-label="Iniciar sesion en el sistema">Iniciar Sesion</a></li>
             <li><a href="/register" aria-label="Crear una nueva cuenta">Registrarse</a></li>

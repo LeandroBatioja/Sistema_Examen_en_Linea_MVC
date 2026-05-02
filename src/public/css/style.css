@@ -114,6 +114,14 @@ body {
   gap: 1rem;
 }
 
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
 .site-title {
   font-size: 1.25rem;
 }
@@ -126,13 +134,6 @@ body {
 .site-title a:hover,
 .site-title a:focus {
   text-decoration: underline;
-}
-
-.nav-menu {
-  display: flex;
-  list-style: none;
-  gap: 1rem;
-  align-items: center;
 }
 
 .nav-menu a {
