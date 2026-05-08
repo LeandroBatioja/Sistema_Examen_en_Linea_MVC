@@ -2,17 +2,19 @@ const Exam = require('../models/Exam');
 const Question = require('../models/Question');
 const { getDb } = require('../models/Database');
 
-function showResults(req, res) {
-  const exam = Exam.findById(req.params.id);
+async function showResults(req, res) {
+  const exam = await Exam.findById(req.params.id);
 
   if (!exam) {
     return res.redirect('/dashboard');
   }
 
   const db = getDb();
-  const examResult = db.prepare(
-    'SELECT * FROM results WHERE user_id = ? AND exam_id = ? ORDER BY completed_at DESC LIMIT 1'
-  ).get(req.session.userId, exam.id);
+  const result = await db.query(
+    'SELECT * FROM results WHERE user_id = $1 AND exam_id = $2 ORDER BY completed_at DESC LIMIT 1',
+    [req.session.userId, exam.id]
+  );
+  const examResult = result.rows[0];
 
   if (!examResult) {
     return res.redirect('/dashboard');
