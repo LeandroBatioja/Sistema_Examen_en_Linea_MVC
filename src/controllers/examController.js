@@ -2,8 +2,18 @@ const Exam = require('../models/Exam');
 const Question = require('../models/Question');
 
 async function showDashboard(req, res) {
+  console.log('=== DEBUG DASHBOARD ===');
+  console.log('User ID:', req.session.userId);
+  console.log('User Name:', req.session.userName);
+  
   const exams = await Exam.findAll();
+  console.log('Exams count:', exams.length);
+  console.log('Exams data:', JSON.stringify(exams));
+  
   const results = await Question.getUserResults(req.session.userId);
+  console.log('Results count:', results.length);
+  console.log('Results data:', JSON.stringify(results));
+  
   res.render('dashboard', {
     pageTitle: 'Panel de Examenes',
     userName: req.session.userName,
