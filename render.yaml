@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: examen-online
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/app.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: examen-online-db
+          property: connectionString
+
+databases:
+  - name: examen-online-db
+    databaseName: examen_online
+    user: examen_user
+    plan: free

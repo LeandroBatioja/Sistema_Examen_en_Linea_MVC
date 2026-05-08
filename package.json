@@ -16,6 +16,6 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
     "ejs": "^3.1.10",
-    "sql.js": "^1.10.0"
+    "pg": "^8.13.0"
   }
 }

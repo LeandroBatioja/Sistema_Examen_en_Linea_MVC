@@ -3,8 +3,29 @@ services:
     build: .
     ports:
       - "3000:3000"
-    volumes:
-      - ./data:/app/data
     environment:
       - PORT=3000
+      - DATABASE_URL=postgresql://examen_user:examen_pass@db:5432/examen_online
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=examen_user
+      - POSTGRES_PASSWORD=examen_pass
+      - POSTGRES_DB=examen_online
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U examen_user"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

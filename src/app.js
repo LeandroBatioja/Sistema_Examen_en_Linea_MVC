@@ -41,12 +41,16 @@ app.use((req, res) => {
   });
 });
 
-db.init().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Sistema de Examenes en Linea: http://localhost:${PORT}`);
-    console.log('Cuenta demo: estudiante / estudiante123');
-  });
-}).catch(err => {
-  console.error('Error al inicializar la base de datos:', err);
-  process.exit(1);
-});
+(async () => {
+  try {
+    await db.init();
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Sistema de Examenes en Linea: http://localhost:${PORT}`);
+      console.log(`Acceso en red local: http://0.0.0.0:${PORT}`);
+      console.log('Cuenta demo: estudiante / estudiante123');
+    });
+  } catch (err) {
+    console.error('Error al inicializar la base de datos:', err);
+    process.exit(1);
+  }
+})();

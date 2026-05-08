@@ -6,7 +6,7 @@ Sistema de examen en linea basado en el patron **MVC (Modelo-Vista-Controlador)*
 
 - **Backend**: Node.js + Express
 - **Vistas**: EJS (Embedded JavaScript)
-- **Base de datos**: SQLite (sql.js)
+- **Base de datos**: PostgreSQL
 - **Accesibilidad**: ARIA, HTML semantico, compatible con Orca
 
 ## Caracteristicas de Accesibilidad
@@ -56,19 +56,51 @@ docker compose up -d
 
 ### Persistencia
 
-La base de datos SQLite se guarda en `./data/` mediante un volumen Docker. Los examenes y resultados se mantienen al reiniciar el contenedor.
+La base de datos PostgreSQL se ejecuta en un contenedor separado con volumen persistente `postgres_data`. Los examenes y resultados se mantienen al reiniciar los contenedores.
+
+## Despliegue en Render (Gratuito y Persistente)
+
+Ideal para compartir con companeros sin dejar tu PC encendida.
+
+### Requisitos
+
+- Cuenta en [Render](https://render.com)
+- Codigo subido a GitHub
+
+### Pasos
+
+1. Sube tu codigo a un repositorio GitHub
+2. En Render, crea un nuevo **Web Service** conectado a tu repositorio
+3. Render detectara automaticamente el archivo `render.yaml`
+4. Se creara automaticamente la base de datos PostgreSQL gratuita
+5. Tu app estara disponible en `https://tu-app.onrender.com`
+
+### Variables de Entorno
+
+Render configura automaticamente:
+- `DATABASE_URL`: URL de conexion a PostgreSQL
+- `NODE_ENV`: production
 
 ## Despliegue Local (sin Docker)
 
 ### Requisitos
 
 - Node.js 20+
+- PostgreSQL instalado localmente (o usar Docker)
 
 ### Instalacion
 
 ```bash
 cd ~/Documentos/examen-online
 npm install
+```
+
+### Configuracion de Base de Datos
+
+Crea una base de datos PostgreSQL y configura la variable de entorno:
+
+```bash
+export DATABASE_URL=postgresql://usuario:password@localhost:5432/examen_online
 ```
 
 ### Ejecutar
