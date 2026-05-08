@@ -67,6 +67,11 @@
             e.preventDefault();
             window.location.href = '/';
             break;
+          case 'c':
+            e.preventDefault();
+            const logoutForm = document.getElementById('logout-form');
+            if (logoutForm) logoutForm.submit();
+            break;
         }
       }
     });

@@ -130,6 +130,7 @@ npm test
 | `Alt + D` | Ir al panel de examenes (Dashboard) |
 | `Alt + L` | Ir a iniciar sesión (Login) |
 | `Alt + H` | Ir a página principal (Home) |
+| `Alt + C` | Cerrar sesión (Logout) |
 
 ### Navegación Básica
 
