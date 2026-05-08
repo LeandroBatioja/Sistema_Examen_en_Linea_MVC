@@ -1,9 +1,9 @@
 const Exam = require('../models/Exam');
 const Question = require('../models/Question');
 
-function showDashboard(req, res) {
-  const exams = Exam.findAll();
-  const results = Question.getUserResults(req.session.userId);
+async function showDashboard(req, res) {
+  const exams = await Exam.findAll();
+  const results = await Question.getUserResults(req.session.userId);
   res.render('dashboard', {
     pageTitle: 'Panel de Examenes',
     userName: req.session.userName,
@@ -12,23 +12,23 @@ function showDashboard(req, res) {
   });
 }
 
-function showExam(req, res) {
-  const exam = Exam.findById(req.params.id);
+async function showExam(req, res) {
+  const exam = await Exam.findById(req.params.id);
 
   if (!exam) {
     return res.redirect('/dashboard');
   }
 
-  if (Exam.checkResultExists(req.session.userId, exam.id)) {
+  if (await Exam.checkResultExists(req.session.userId, exam.id)) {
     return res.redirect(`/results/${exam.id}`);
   }
 
-  const totalQuestions = Exam.getQuestionCount(exam.id);
+  const totalQuestions = await Exam.getQuestionCount(exam.id);
   const perPage = exam.questions_per_page;
   const totalPages = Math.ceil(totalQuestions / perPage);
   const currentPage = 1;
 
-  const questions = Exam.getQuestionsPaginated(exam.id, currentPage, perPage);
+  const questions = await Exam.getQuestionsPaginated(exam.id, currentPage, perPage);
 
   res.render('exam', {
     pageTitle: exam.title,
@@ -44,14 +44,14 @@ function showExam(req, res) {
   });
 }
 
-function showExamPage(req, res) {
-  const exam = Exam.findById(req.params.id);
+async function showExamPage(req, res) {
+  const exam = await Exam.findById(req.params.id);
 
   if (!exam) {
     return res.redirect('/dashboard');
   }
 
-  const totalQuestions = Exam.getQuestionCount(exam.id);
+  const totalQuestions = await Exam.getQuestionCount(exam.id);
   const perPage = exam.questions_per_page;
   const totalPages = Math.ceil(totalQuestions / perPage);
   const currentPage = parseInt(req.params.page);
@@ -60,7 +60,7 @@ function showExamPage(req, res) {
     return res.redirect(`/exam/${exam.id}`);
   }
 
-  const questions = Exam.getQuestionsPaginated(exam.id, currentPage, perPage);
+  const questions = await Exam.getQuestionsPaginated(exam.id, currentPage, perPage);
 
   res.render('exam', {
     pageTitle: exam.title,
@@ -76,14 +76,14 @@ function showExamPage(req, res) {
   });
 }
 
-function submitAnswers(req, res) {
-  const exam = Exam.findById(req.params.id);
+async function submitAnswers(req, res) {
+  const exam = await Exam.findById(req.params.id);
 
   if (!exam) {
     return res.redirect('/dashboard');
   }
 
-  const totalQuestions = Exam.getQuestionCount(exam.id);
+  const totalQuestions = await Exam.getQuestionCount(exam.id);
   const perPage = exam.questions_per_page;
   const totalPages = Math.ceil(totalQuestions / perPage);
   const currentPage = parseInt(req.params.page);
@@ -107,19 +107,19 @@ function submitAnswers(req, res) {
   return res.redirect(`/exam/${exam.id}/finish`);
 }
 
-function finishExam(req, res) {
-  const exam = Exam.findById(req.params.id);
+async function finishExam(req, res) {
+  const exam = await Exam.findById(req.params.id);
 
   if (!exam) {
     return res.redirect('/dashboard');
   }
 
-  if (Exam.checkResultExists(req.session.userId, exam.id)) {
+  if (await Exam.checkResultExists(req.session.userId, exam.id)) {
     return res.redirect(`/results/${exam.id}`);
   }
 
   const answers = req.session[`exam_${exam.id}_answers`] || {};
-  const allQuestions = Exam.getAllQuestions(exam.id);
+  const allQuestions = await Exam.getAllQuestions(exam.id);
 
   let score = 0;
   allQuestions.forEach((q, index) => {
@@ -129,7 +129,7 @@ function finishExam(req, res) {
     }
   });
 
-  Question.saveResult(req.session.userId, exam.id, score, allQuestions.length);
+  await Question.saveResult(req.session.userId, exam.id, score, allQuestions.length);
 
   delete req.session[`exam_${exam.id}_answers`];
 
