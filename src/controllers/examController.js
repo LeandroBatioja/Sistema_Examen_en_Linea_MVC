@@ -146,4 +146,24 @@ async function finishExam(req, res) {
   res.redirect(`/results/${exam.id}`);
 }
 
-module.exports = { showDashboard, showExam, showExamPage, submitAnswers, finishExam };
+async function abortExam(req, res) {
+  const exam = await Exam.findById(req.params.id);
+
+  if (!exam) {
+    return res.redirect('/dashboard');
+  }
+
+  if (await Exam.checkResultExists(req.session.userId, exam.id)) {
+    return res.redirect(`/results/${exam.id}`);
+  }
+
+  const allQuestions = await Exam.getAllQuestions(exam.id);
+
+  await Question.saveResult(req.session.userId, exam.id, 0, allQuestions.length);
+
+  delete req.session[`exam_${exam.id}_answers`];
+
+  res.redirect(`/results/${exam.id}`);
+}
+
+module.exports = { showDashboard, showExam, showExamPage, submitAnswers, finishExam, abortExam };

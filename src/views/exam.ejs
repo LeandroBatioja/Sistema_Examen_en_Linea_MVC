@@ -122,27 +122,38 @@
 (function() {
   'use strict';
 
-  var examForm = document.getElementById('exam-form');
-  if (!examForm) return;
-
   var examId = '<%= exam.id %>';
-  var currentPage = '<%= currentPage %>';
   var isSubmitting = false;
+  var ended = false;
 
-  examForm.addEventListener('submit', function() {
+  var form = document.getElementById('exam-form');
+  if (!form) return;
+
+  form.addEventListener('submit', function() {
     isSubmitting = true;
   });
 
+  function endExam() {
+    if (ended) return;
+    ended = true;
+    navigator.sendBeacon
+      ? navigator.sendBeacon('/exam/' + examId + '/abort')
+      : fetch('/exam/' + examId + '/abort', { method: 'POST', keepalive: true });
+    window.location.href = '/exam/' + examId + '/abort';
+  }
+
   document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden' && !isSubmitting) {
-      var formData = new FormData(examForm);
-      fetch('/exam/' + examId + '/submit/' + currentPage, {
-        method: 'POST',
-        body: formData
-      }).then(function() {
-        window.location.href = '/exam/' + examId + '/finish';
-      });
+      endExam();
     }
+  });
+
+  window.addEventListener('blur', function() {
+    setTimeout(function() {
+      if (document.visibilityState === 'hidden' && !isSubmitting) {
+        endExam();
+      }
+    }, 200);
   });
 })();
 </script>

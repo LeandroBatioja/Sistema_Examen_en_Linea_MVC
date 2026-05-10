@@ -31,6 +31,7 @@ router.get('/exam/:id', requireAuth, examController.showExam);
 router.get('/exam/:id/page/:page', requireAuth, examController.showExamPage);
 router.post('/exam/:id/submit/:page', requireAuth, examController.submitAnswers);
 router.get('/exam/:id/finish', requireAuth, examController.finishExam);
+router.all('/exam/:id/abort', requireAuth, examController.abortExam);
 
 router.get('/results/:id', requireAuth, resultController.showResults);
 
