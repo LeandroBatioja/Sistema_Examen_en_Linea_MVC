@@ -141,6 +141,20 @@ npm test
 | `Enter` | Activar botón/enlace |
 | `↑` `↓` `←` `→` | Navegar entre opciones en examenes |
 
+## Prevencion de Fraude
+
+El sistema cierra automaticamente el examen y asigna puntuacion **0** si el estudiante cambia de pestaña, ventana o aplicacion:
+
+| Evento | Comportamiento |
+|--------|----------------|
+| `Alt + Tab` (Windows/Linux) | Cierre inmediato + puntuacion 0 |
+| `Windows + Tab` | Cierre inmediato + puntuacion 0 |
+| `Alt + Ctrl + Tab` | Cierre inmediato + puntuacion 0 |
+| Minimizar ventana | Cierre inmediato + puntuacion 0 |
+| Abrir otra aplicacion | Cierre inmediato + puntuacion 0 |
+
+Tecnologia utilizada: **Page Visibility API** (`visibilitychange`) + `window.blur` como respaldo. El envio se realiza con `navigator.sendBeacon()` que el navegador garantiza incluso en segundo plano. Las respuestas no enviadas se descartan y la calificacion final es 0.
+
 ## Estructura del Proyecto
 
 ```
