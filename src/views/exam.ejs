@@ -117,3 +117,32 @@
     </div>
   </form>
 </div>
+
+<script>
+(function() {
+  'use strict';
+
+  var examForm = document.getElementById('exam-form');
+  if (!examForm) return;
+
+  var examId = '<%= exam.id %>';
+  var currentPage = '<%= currentPage %>';
+  var isSubmitting = false;
+
+  examForm.addEventListener('submit', function() {
+    isSubmitting = true;
+  });
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden' && !isSubmitting) {
+      var formData = new FormData(examForm);
+      fetch('/exam/' + examId + '/submit/' + currentPage, {
+        method: 'POST',
+        body: formData
+      }).then(function() {
+        window.location.href = '/exam/' + examId + '/finish';
+      });
+    }
+  });
+})();
+</script>
