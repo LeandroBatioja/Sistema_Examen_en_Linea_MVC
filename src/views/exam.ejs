@@ -1,4 +1,17 @@
 <div class="exam-container">
+  <div id="exam-overlay" class="exam-overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+    <div class="exam-overlay-content">
+      <div class="overlay-icon" aria-hidden="true">&#9888;&#65039;</div>
+      <h2 id="overlay-title">Aviso importante</h2>
+      <p class="overlay-text">
+        No se permite cambiar de pesta&ntilde;a, abrir otras ventanas o minimizar el navegador durante el examen.
+        Si lo haces, el examen se dar&aacute; por finalizado autom&aacute;ticamente con 0 puntos.
+      </p>
+      <button id="accept-warning" class="btn btn-primary overlay-btn" aria-label="Aceptar el aviso y comenzar el examen">
+        Entendido, comenzar examen
+      </button>
+    </div>
+  </div>
   <h2 id="exam-heading"><%= exam.title %></h2>
 
   <div class="exam-progress">
@@ -125,13 +138,49 @@
   var examId = '<%= exam.id %>';
   var isSubmitting = false;
   var ended = false;
+  var examStarted = false;
 
   var form = document.getElementById('exam-form');
-  if (!form) return;
+  var overlay = document.getElementById('exam-overlay');
+  var acceptBtn = document.getElementById('accept-warning');
+
+  if (!form || !overlay || !acceptBtn) return;
 
   form.addEventListener('submit', function() {
     isSubmitting = true;
   });
+
+  acceptBtn.addEventListener('click', function() {
+    overlay.classList.add('hidden');
+    var heading = document.getElementById('exam-heading');
+    if (heading) heading.focus();
+    startExam();
+  });
+
+  acceptBtn.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      acceptBtn.click();
+    }
+  });
+
+  function startExam() {
+    examStarted = true;
+
+    document.addEventListener('visibilitychange', function() {
+      if (examStarted && document.visibilityState === 'hidden' && !isSubmitting) {
+        endExam();
+      }
+    });
+
+    window.addEventListener('blur', function() {
+      setTimeout(function() {
+        if (examStarted && document.visibilityState === 'hidden' && !isSubmitting) {
+          endExam();
+        }
+      }, 200);
+    });
+  }
 
   function endExam() {
     if (ended) return;
@@ -141,19 +190,5 @@
       : fetch('/exam/' + examId + '/abort', { method: 'POST', keepalive: true });
     window.location.href = '/exam/' + examId + '/abort';
   }
-
-  document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden' && !isSubmitting) {
-      endExam();
-    }
-  });
-
-  window.addEventListener('blur', function() {
-    setTimeout(function() {
-      if (document.visibilityState === 'hidden' && !isSubmitting) {
-        endExam();
-      }
-    }, 200);
-  });
 })();
 </script>
