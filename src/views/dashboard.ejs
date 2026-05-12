@@ -1,4 +1,15 @@
 <article aria-labelledby="dashboard-heading">
+  <div id="exam-start-overlay" class="exam-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
+    <div class="exam-overlay-content">
+      <div class="overlay-icon" aria-hidden="true">&#9888;&#65039;</div>
+      <h2 id="overlay-title">Aviso importante</h2>
+      <p class="overlay-text">
+        No se permite cambiar de pesta&ntilde;a, abrir otras ventanas o minimizar el navegador durante el examen.
+        Si lo haces, el examen se dar&aacute; por finalizado autom&aacute;ticamente con 0 puntos.
+      </p>
+      <button id="accept-start" class="btn btn-primary overlay-btn">Entendido, ir al examen</button>
+    </div>
+  </div>
   <h2 id="dashboard-heading">Panel de Examenes</h2>
   <p class="welcome-text">Bienvenido, <%= userName %>. Seleccione un examen para comenzar.</p>
 
@@ -22,7 +33,7 @@
                   <dd><%= exam.questions_per_page %> preguntas</dd>
                 </div>
               </dl>
-              <a href="/exam/<%= exam.id %>" class="btn btn-primary" aria-label="Comenzar examen: <%= exam.title %>">
+              <a href="/exam/<%= exam.id %>" class="btn btn-primary" data-exam-start aria-label="Comenzar examen: <%= exam.title %>">
                 Comenzar Examen
               </a>
             </article>
@@ -71,3 +82,53 @@
     </section>
   <% } %>
 </article>
+
+<script>
+(function() {
+  'use strict';
+
+  var overlay = document.getElementById('exam-start-overlay');
+  var acceptBtn = document.getElementById('accept-start');
+  var pendingUrl = null;
+
+  if (!overlay || !acceptBtn) return;
+
+  var links = document.querySelectorAll('[data-exam-start]');
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      pendingUrl = this.href;
+      overlay.classList.remove('hidden');
+      acceptBtn.focus();
+    });
+  });
+
+  acceptBtn.addEventListener('click', function() {
+    if (pendingUrl) {
+      overlay.classList.add('hidden');
+      window.location.href = pendingUrl;
+    }
+  });
+
+  acceptBtn.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      acceptBtn.click();
+    }
+  });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.add('hidden');
+      pendingUrl = null;
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+      overlay.classList.add('hidden');
+      pendingUrl = null;
+    }
+  });
+})();
+</script>
