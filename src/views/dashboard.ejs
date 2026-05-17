@@ -105,6 +105,14 @@
 
   acceptBtn.addEventListener('click', function() {
     if (pendingUrl) {
+      var el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(function() {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+      }
       overlay.classList.add('hidden');
       window.location.href = pendingUrl;
     }
