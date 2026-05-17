@@ -110,6 +110,10 @@ async function submitAnswers(req, res) {
     }
   }
 
+  if (req.body.nav === 'prev') {
+    return res.redirect(`/exam/${exam.id}/page/${currentPage - 1}`);
+  }
+
   if (currentPage < totalPages) {
     return res.redirect(`/exam/${exam.id}/page/${currentPage + 1}`);
   }

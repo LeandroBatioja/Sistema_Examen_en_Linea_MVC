@@ -100,11 +100,11 @@
 
     <div class="exam-actions">
       <% if (currentPage > 1) { %>
-        <a href="/exam/<%= exam.id %>/page/<%= currentPage - 1 %>"
+        <button type="submit" name="nav" value="prev"
            class="btn btn-secondary"
            aria-label="Ir a la pagina anterior de preguntas">
           ← Anterior
-        </a>
+        </button>
       <% } %>
 
       <button type="submit" class="btn btn-primary" aria-label="<% if (currentPage < totalPages) { %>Guardar respuestas e ir a la siguiente pagina<% } else { %>Guardar respuestas y finalizar el examen<% } %>">
@@ -125,6 +125,7 @@
   var examId = '<%= exam.id %>';
   var isSubmitting = false;
   var ended = false;
+  var fsRequested = false;
 
   var form = document.getElementById('exam-form');
   if (!form) return;
@@ -139,21 +140,76 @@
     navigator.sendBeacon
       ? navigator.sendBeacon('/exam/' + examId + '/abort')
       : fetch('/exam/' + examId + '/abort', { method: 'POST', keepalive: true });
-    window.location.href = '/exam/' + examId + '/abort';
+    setTimeout(function() {
+      window.location.href = '/exam/' + examId + '/abort';
+    }, 200);
   }
 
+  function tryFullscreen() {
+    if (fsRequested) return;
+    fsRequested = true;
+    var el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen().catch(function() {});
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  }
+
+  document.addEventListener('click', tryFullscreen, { once: true });
+  document.addEventListener('touchstart', tryFullscreen, { once: true });
+
   document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden' && !isSubmitting) {
+    if (document.visibilityState === 'hidden' && !isSubmitting && !ended) {
       endExam();
     }
   });
 
   window.addEventListener('blur', function() {
+    if (ended || isSubmitting) return;
     setTimeout(function() {
-      if (document.visibilityState === 'hidden' && !isSubmitting) {
+      if (!document.hasFocus() && !isSubmitting && !ended) {
         endExam();
       }
-    }, 200);
+    }, 500);
   });
+
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  document.addEventListener('copy', function(e) { e.preventDefault(); });
+  document.addEventListener('cut', function(e) { e.preventDefault(); });
+  document.addEventListener('paste', function(e) { e.preventDefault(); });
+
+  document.addEventListener('keydown', function(e) {
+    tryFullscreen();
+    if (ended) return;
+    if (
+      e.key === 'F12' ||
+      (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+      (e.ctrlKey && e.key === 'U')
+    ) {
+      e.preventDefault();
+      endExam();
+    }
+  });
+
+  function onFullscreenChange() {
+    if (ended || isSubmitting) return;
+    if (
+      !document.fullscreenElement &&
+      !document.webkitFullscreenElement &&
+      !document.msFullscreenElement
+    ) {
+      if (!ended) endExam();
+    }
+  }
+
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+  document.addEventListener('MSFullscreenChange', onFullscreenChange);
 })();
 </script>
