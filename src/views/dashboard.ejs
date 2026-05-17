@@ -106,15 +106,27 @@
   acceptBtn.addEventListener('click', function() {
     if (pendingUrl) {
       var el = document.documentElement;
+      var fsPromise;
+
       if (el.requestFullscreen) {
-        el.requestFullscreen().catch(function() {});
+        try { fsPromise = el.requestFullscreen(); } catch (e) {}
       } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen();
+        try { fsPromise = el.webkitRequestFullscreen(); } catch (e) {}
       } else if (el.msRequestFullscreen) {
-        el.msRequestFullscreen();
+        try { fsPromise = el.msRequestFullscreen(); } catch (e) {}
       }
+
       overlay.classList.add('hidden');
-      window.location.href = pendingUrl;
+
+      function navigate() {
+        window.location.href = pendingUrl;
+      }
+
+      if (fsPromise && typeof fsPromise.then === 'function') {
+        fsPromise.then(navigate, navigate);
+      } else {
+        setTimeout(navigate, 300);
+      }
     }
   });
 
